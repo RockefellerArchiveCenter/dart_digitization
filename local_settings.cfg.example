@@ -1,0 +1,5 @@
+[ArchivesSpace]
+baseurl = http://localhost:8089
+repository = 101
+username = admin
+password = admin
