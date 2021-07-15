@@ -8,14 +8,23 @@ class ArchivesSpaceClient:
             username=username,
             password=password).client
 
-    def get_ao_uri(self):
+    def get_ao_uri(self, refid):
         """Use find_by_refid endpoint to return the URI of an archival object"""
-        pass
+        find_by_refid_url = "repositories/2/find_by_id/archival_objects?ref_id[]={}".format(
+            refid)
+        results = self.client.get(find_by_refid_url).json()
+        return results['archival_objects'][0]['ref']
 
-    def get_ao_data(self):
+    def get_ao_data(self, ao_uri):
         """Gets data for an archival object, including ancestors"""
-    pass
+        ao_json = self.client.get(
+            ao_uri, params={
+                "resolve": ["ancestors"]}).json()
+        return ao_json
 
-    def get_dates(self):
-        """Returns begin and end dates in format YYYY-MM-DD. If date does not exist for an archival object, gets date information from nearest ancestor"""
-    pass
+    def get_dates(self, ao_json):
+        if "dates" in ao_json.keys():
+            dates = ao_json['dates'][0]
+            begin_date = dates['begin']
+            end_date = dates['end']
+            return begin_date, end_date
