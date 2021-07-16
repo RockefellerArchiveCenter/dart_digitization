@@ -1,5 +1,7 @@
 from asnake.aspace import ASpace
 
+# from .helpers import get_dates
+
 
 class ArchivesSpaceClient:
     def __init__(self, baseurl, username, password):
@@ -21,10 +23,3 @@ class ArchivesSpaceClient:
             ao_uri, params={
                 "resolve": ["ancestors"]}).json()
         return ao_json
-
-    def get_dates(self, ao_json):
-        if "dates" in ao_json.keys():
-            dates = ao_json['dates'][0]
-            begin_date = dates['begin']
-            end_date = dates['end']
-            return begin_date, end_date
