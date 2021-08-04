@@ -24,8 +24,10 @@ class BagCreator():
         self.rights_ids = ["this", "needs", "to", "be", "done"]
         self.refid = "some refid"
         self.target_directory = self.create_target_directory()
-        as_client = ArchivesSpaceClient(baseurl=self.config.get("ArchivesSpace", "baseurl"), username=self.config.get(
-            "ArchivesSpace", "username"), password=self.config.get("ArchivesSpace", "password"))
+        as_client = ArchivesSpaceClient(baseurl=self.config.get(
+            "ArchivesSpace", "baseurl"), username=self.config.get(
+            "ArchivesSpace", "username"), password=self.config.get(
+            "ArchivesSpace", "password"))
         self.ao_uri = as_client.get_ao_uri(self.refid)
         ao_data = as_client.get_ao_data(self.ao_uri)
         dates = get_dates(ao_data)
@@ -36,17 +38,18 @@ class BagCreator():
         #         {"tagName": "end-date", "userValue": end_date}]
         # TODO: tiff files will be in payload, with optional service directory
 
-    def construct_job_params_json(self):
-        job_params_json = {"workflowName": "Digitization Workflow"}
-        job_params_json['packageName'] = "{}.tar".format(self.refid)
+    def construct_job_params(self):
+        job_params = {"workflowName": "Digitization Workflow"}
+        job_params['packageName'] = "{}.tar".format(self.refid)
         # TODO: get files in another method? to be passed into this method?
-        job_params_json['files'] = ['/path/to/directory']
+        job_params['files'] = ['/path/to/directory']
         tags = []
         tags.append(create_tag("ArchivesSpace-URI", self.ao_uri))
         tags.append(create_tag("Start-Date", self.start_date))
         tags.append(create_tag("End-Date", self.end_date))
         tags.append(create_tag("Origin", "digitization"))
-        job_params_json['tags'] = tags
+        job_params['tags'] = tags
+        return job_params
 
     def create_target_directory(self):
         """docstring for create_target_directory"""
