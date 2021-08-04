@@ -43,3 +43,11 @@ def get_dates(archival_object):
                 dates = a['dates'][0]
                 break
     return dates
+
+
+def create_tag(tag_name, user_value, tag_file="bag-info.txt"):
+    """docstring for create_tag"""
+    tag_dictionary = {"tagFile": tag_file}
+    tag_dictionary['tagName'] = tag_name
+    tag_dictionary['userValue'] = user_value
+    return tag_dictionary
