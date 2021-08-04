@@ -7,3 +7,5 @@ def test_create_tag():
     expected_result = {"tagFile": "bag-info.txt",
                        "tagName": "testName", "userValue": "test value"}
     assert created_tag == expected_result
+
+# test_construct_job_params
