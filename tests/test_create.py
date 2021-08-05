@@ -1,5 +1,5 @@
 
-from .helpers import create_tag
+from create_bags.helpers import create_tag
 
 
 def test_create_tag():
