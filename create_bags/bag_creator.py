@@ -17,7 +17,7 @@ class BagCreator():
             level=logging.INFO)
         self.config = ConfigParser()
         self.config.read("local_settings.cfg")
-        self.dest_location = self.configet.get("Locations", "dest_location")
+        self.dest_location = self.config.get("Locations", "dest_location")
 
     def run(self):
         # directory_to_bag = "some directory"
