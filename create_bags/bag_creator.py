@@ -19,10 +19,15 @@ class BagCreator():
         self.config.read("local_settings.cfg")
         self.dest_location = self.config.get("Locations", "dest_location")
 
-    def run(self):
+    def run(self, refid, rights_ids):
+        """
+        Args:
+        refid (str)
+        rights_ids (array)
+        """
         # directory_to_bag = "some directory"
-        self.rights_ids = ["this", "needs", "to", "be", "done"]
-        self.refid = "some refid"
+        self.refid = refid
+        self.rights_ids = rights_ids
         self.target_directory = self.create_target_directory()
         as_client = ArchivesSpaceClient(baseurl=self.config.get(
             "ArchivesSpace", "baseurl"), username=self.config.get(
@@ -32,8 +37,8 @@ class BagCreator():
         ao_data = as_client.get_ao_data(self.ao_uri)
         dates = get_dates(ao_data)
         self.start_date, self.end_date = format_aspace_date(dates)
+        # TODO: does something need to be set to look at files in `master` or another directory? something like master_directory=True, or are there other values?
         # TODO: get files or file path? for bagging
-        # tag_file = "bag-info.txt"
         # tags = [{"tagName": "start-date", "userValue": start_date},
         #         {"tagName": "end-date", "userValue": end_date}]
         # TODO: tiff files will be in payload, with optional service directory
