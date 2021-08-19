@@ -12,6 +12,7 @@ def test_construct_job_params():
     bag_creator.ao_uri = "/whatever"
     bag_creator.start_date = "1940-01-01"
     bag_creator.end_date = "1940-06-01"
+    bag_creator.files = ["/path/to/file1.tif", "/path/to/file2.tif"]
     job_params = bag_creator.construct_job_params()
     assert isinstance(job_params, dict)
     for tag in job_params["tags"]:
