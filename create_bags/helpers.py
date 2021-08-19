@@ -1,3 +1,6 @@
+from os import listdir
+from os.path import isfile, join
+from shutil import copy2
 
 
 def format_aspace_date(dates):
@@ -51,3 +54,29 @@ def create_tag(tag_name, user_value, tag_file="bag-info.txt"):
     tag_dictionary['tagName'] = tag_name
     tag_dictionary['userValue'] = user_value
     return tag_dictionary
+
+
+def matching_files(directory, suffix=None, prepend=False):
+    """Get a list of files that start with a specific prefix, optionally removing
+    any files that end in `_001`.
+    Args:
+        directory (str): The directory containing files.
+        suffix (str): A suffix (file extension) to match filenames against.
+        prepend (bool): Add the directory to the filepaths returned
+    Returns:
+        files (lst): a list of files that matched the identifier.
+    """
+    files = sorted([f for f in listdir(directory) if (
+        isfile(join(directory, f)) and not f.startswith((".", "Thumbs")))])
+    if suffix:
+        files = sorted([f for f in files if f.endswith(suffix)])
+    return [join(directory, f) for f in files] if prepend else files
+
+
+def copy_tiff_files(source_dir, dest_dir):
+    tiff_files = matching_files(source_dir, suffix="tif")
+    copied_tiffs = []
+    for tiff in tiff_files:
+        copy2(join(source_dir, tiff), join(dest_dir, tiff))
+        copied_tiffs.append(join(dest_dir, tiff))
+    return copied_tiffs
