@@ -26,6 +26,7 @@ class BagCreator:
         # directory_to_bag = "some directory"
         self.refid = refid
         self.rights_ids = rights_ids
+        self.files = files
         as_client = ArchivesSpaceClient(baseurl=self.config.get(
             "ArchivesSpace", "baseurl"), username=self.config.get(
             "ArchivesSpace", "username"), password=self.config.get(
@@ -34,15 +35,13 @@ class BagCreator:
         ao_data = as_client.get_ao_data(self.ao_uri)
         dates = get_dates(ao_data)
         self.start_date, self.end_date = format_aspace_date(dates)
-        # tags = [{"tagName": "start-date", "userValue": start_date},
-        #         {"tagName": "end-date", "userValue": end_date}]
-        # TODO: tiff files will be in payload, with optional service directory
         # TODO: return path to created bag, any message from DART
         return self.refid
 
     def construct_job_params(self):
         job_params = {"workflowName": "Digitization Workflow"}
         job_params['packageName'] = "{}.tar".format(self.refid)
+        job_params['files'] = self.files
         # TODO: get files in another method? to be passed into this method?
         job_params['files'] = ['/path/to/directory']
         tags = []
