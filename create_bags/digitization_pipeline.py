@@ -18,8 +18,10 @@ class DigitizationPipeline:
         for refid in refids:
             master_tiffs = copy_tiff_files(
                 join(self.root_dir, refid, "master"), join(self.tmp_dir, refid))
-            master_edited_tiffs = copy_tiff_files(join(
-                self.root_dir, refid, "master_edited"), join(self.tmp_dir, refid, "service"))
+            master_edited_tiffs = []
+            if isdir(join(self.root_dir, refid, "master_edited")):
+                master_edited_tiffs = copy_tiff_files(join(
+                    self.root_dir, refid, "master_edited"), join(self.tmp_dir, refid, "service"))
             list_of_files = master_tiffs + master_edited_tiffs
             created_bags = BagCreator().run(self.tmp_dir, refid, rights_ids, list_of_files)
             list_of_created_bags.append(created_bags)
