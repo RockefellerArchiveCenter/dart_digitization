@@ -5,7 +5,7 @@ from .bag_creator import BagCreator
 from .helpers import copy_tiff_files
 
 
-class SpecialProjects:
+class DigitizationPipeline:
 
     def __init__(self, tmp_dir, root_dir):
         self.tmp_dir = tmp_dir
