@@ -16,6 +16,12 @@ class BagCreator:
         self.config = ConfigParser()
         self.config.read("local_settings.cfg")
         self.dest_location = self.config.get("Locations", "dest_location")
+        # TODO: we should alias dart? where are we installing dart?
+        self.as_client = ArchivesSpaceClient(baseurl=self.config.get(
+            "ArchivesSpace", "baseurl"), username=self.config.get(
+            "ArchivesSpace", "username"), password=self.config.get(
+            "ArchivesSpace", "password"))
+        self.dart_command = "we gotta figure this out"
 
     def run(self, top_dir, refid, rights_ids, files):
         """
@@ -27,12 +33,8 @@ class BagCreator:
         self.refid = refid
         self.rights_ids = rights_ids
         self.files = files
-        as_client = ArchivesSpaceClient(baseurl=self.config.get(
-            "ArchivesSpace", "baseurl"), username=self.config.get(
-            "ArchivesSpace", "username"), password=self.config.get(
-            "ArchivesSpace", "password"))
-        self.ao_uri = as_client.get_ao_uri(self.refid)
-        ao_data = as_client.get_ao_data(self.ao_uri)
+        self.ao_uri = self.as_client.get_ao_uri(self.refid)
+        ao_data = self.as_client.get_ao_data(self.ao_uri)
         dates = get_dates(ao_data)
         self.start_date, self.end_date = format_aspace_date(dates)
         # TODO: return path to created bag, any message from DART
