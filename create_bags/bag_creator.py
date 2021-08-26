@@ -1,5 +1,7 @@
+import json
 import logging
 from configparser import ConfigParser
+from subprocess import PIPE, Popen
 
 from .archivesspace import ArchivesSpaceClient
 from .helpers import create_tag, format_aspace_date, get_dates
@@ -37,6 +39,8 @@ class BagCreator:
         ao_data = self.as_client.get_ao_data(self.ao_uri)
         dates = get_dates(ao_data)
         self.start_date, self.end_date = format_aspace_date(dates)
+        self.job_params = self.construct_job_params()
+        self.create_dart_job()
         # TODO: return path to created bag, any message from DART
         return self.refid
 
@@ -54,3 +58,15 @@ class BagCreator:
         tags.append(create_tag("Origin", "digitization"))
         job_params['tags'] = tags
         return job_params
+
+    def create_dart_job(self):
+        """Runs a DART job"""
+        json_string = json.dumps(self.job_params)
+        cmd = "{} -- --stdin".format(self.dart_command)
+        child = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, close_fds=True)
+        stdout_data, stderr_data = child.communicate(json_string + "\n")
+        if stdout_data is not None:
+            raise Exception(stdout_data)
+        elif stderr_data is not None:
+            raise Exception(stderr_data)
+        return child.returncode
