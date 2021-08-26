@@ -41,11 +41,12 @@ class BagCreator:
         return self.refid
 
     def construct_job_params(self):
+        """Formats information for DART job parameters
+
+        Returns a dictionary"""
         job_params = {"workflowName": "Digitization Workflow"}
         job_params['packageName'] = "{}.tar".format(self.refid)
         job_params['files'] = self.files
-        # TODO: get files in another method? to be passed into this method?
-        job_params['files'] = ['/path/to/directory']
         tags = []
         tags.append(create_tag("ArchivesSpace-URI", self.ao_uri))
         tags.append(create_tag("Start-Date", self.start_date))
