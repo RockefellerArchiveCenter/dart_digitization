@@ -32,11 +32,16 @@ class BagCreator:
         dates = format_aspace_date(get_dates(ao_data))
         self.job_params = self.construct_job_params(rights_ids, files, dates)
         self.create_dart_job()
-        # TODO: return path to created bag, any message from DART
+        # TODO: we'll probably want to return something else
         return self.refid
 
     def construct_job_params(self, rights_ids, files, dates):
         """Formats information for DART job parameters
+
+        Args:
+            rights_ids (array): list of rights ids
+            files (array): list of full filepaths
+            dates (tuple): begin and end dates
 
         Returns a dictionary"""
         job_params = {"workflowName": "Digitization Workflow"}
@@ -62,4 +67,5 @@ class BagCreator:
             raise Exception(stdout_data)
         elif stderr_data is not None:
             raise Exception(stderr_data)
+        # TODO: will probably want to return path of created bag
         return child.returncode
