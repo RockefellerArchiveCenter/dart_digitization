@@ -1,5 +1,4 @@
 import json
-import logging
 from configparser import ConfigParser
 from subprocess import PIPE, Popen
 
@@ -10,11 +9,6 @@ from .helpers import create_tag, format_aspace_date, get_dates
 class BagCreator:
 
     def __init__(self):
-        logging.basicConfig(
-            datefmt='%m/%d/%Y %I:%M:%S %p',
-            filename='bag_creator.log',
-            format='%(asctime)s %(message)s',
-            level=logging.INFO)
         self.config = ConfigParser()
         self.config.read("local_settings.cfg")
         self.dest_location = self.config.get("Locations", "dest_location")
