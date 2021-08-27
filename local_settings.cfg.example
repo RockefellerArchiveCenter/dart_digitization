@@ -6,3 +6,6 @@ password = admin
 
 [Locations]
 dest_location = some/path/
+
+[DART]
+dart = /path/to/DART

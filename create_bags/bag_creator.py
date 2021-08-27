@@ -12,8 +12,7 @@ class BagCreator:
         self.config = ConfigParser()
         self.config.read("local_settings.cfg")
         self.dest_location = self.config.get("Locations", "dest_location")
-        # TODO: we should alias dart? where are we installing dart?
-        self.dart_command = "we gotta figure this out"
+        self.dart_command = self.config.get("DART", "dart")
 
     def run(self, top_dir, refid, rights_ids, files):
         """
