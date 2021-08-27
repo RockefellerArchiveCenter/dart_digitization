@@ -15,6 +15,3 @@ def test_construct_job_params():
         if tag["tagName"] == "Start-Date":
             assert tag["userValue"] == "1940-01-01"
     assert len(job_params["tags"]) == 6
-
-
-# test_construct_job_params
