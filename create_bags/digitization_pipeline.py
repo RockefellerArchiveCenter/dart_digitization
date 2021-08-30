@@ -18,21 +18,26 @@ class DigitizationPipeline:
         self.root_dir = root_dir
 
     def run(self, rights_ids):
+        print("Starting run...")
         refids = [d for d in listdir(self.root_dir) if isdir(
             join(self.root_dir, d)) and len(d) == 32]
+        print(refids)
         list_of_created_bags = []
         for refid in refids:
             try:
                 master_tiffs = copy_tiff_files(
                     join(self.root_dir, refid, "master"), join(self.tmp_dir, refid))
+                print(master_tiffs)
                 master_edited_tiffs = []
                 if isdir(join(self.root_dir, refid, "master_edited")):
                     master_edited_tiffs = copy_tiff_files(join(
                         self.root_dir, refid, "master_edited"), join(self.tmp_dir, refid, "service"))
                 list_of_files = master_tiffs + master_edited_tiffs
+                print(list_of_files)
                 created_bag = BagCreator().run(self.tmp_dir, refid, rights_ids, list_of_files)
                 list_of_created_bags.append(created_bag)
                 logging.info(
                     "Bag successfully created: {}".format(created_bag))
             except Exception as e:
+                print(e)
                 logging.error("Error for ref_id {}: {}".format(refid, e))
