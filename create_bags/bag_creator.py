@@ -52,7 +52,7 @@ class BagCreator:
         tags.append(create_tag("End-Date", dates[1]))
         tags.append(create_tag("Origin", "digitization"))
         for rights_id in rights_ids:
-            tags.append(create_tag("Rights-ID", rights_id))
+            tags.append(create_tag("Rights-ID", str(rights_id)))
         job_params['tags'] = tags
         return job_params
 
@@ -63,7 +63,8 @@ class BagCreator:
         child = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, close_fds=True)
         stdout_data, stderr_data = child.communicate(json_input)
         if stdout_data is not None:
-            raise Exception(stdout_data)
+            if stdout_data.decode('utf-8'):
+                raise Exception(stdout_data.decode('utf-8'))
         elif stderr_data is not None:
             raise Exception(stderr_data)
         # TODO: will probably want to return path of created bag
