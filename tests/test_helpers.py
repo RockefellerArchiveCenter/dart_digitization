@@ -2,7 +2,8 @@ import json
 from os.path import join
 
 import pytest
-from create_bags.helpers import create_tag, format_aspace_date, get_dates
+from create_bags.helpers import (create_tag, format_aspace_date,
+                                 get_closest_dates)
 
 
 def test_create_tag():
@@ -19,7 +20,7 @@ def test_format_aspace_date(ao_date_data):
 
 
 def test_get_dates(ao_data):
-    date_data = get_dates(ao_data)
+    date_data = get_closest_dates(ao_data)
     assert isinstance(date_data, dict)
 
 
