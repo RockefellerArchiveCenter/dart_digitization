@@ -1,12 +1,12 @@
-from asnake.aspace import ASpace
+from asnake.client import ASnakeClient
 
 
 class ArchivesSpaceClient:
     def __init__(self, baseurl, username, password):
-        self.client = ASpace(
+        self.client = ASnakeClient(
             baseurl=baseurl,
             username=username,
-            password=password).client
+            password=password)
 
     def get_ao_uri(self, refid):
         """Use find_by_refid endpoint to return the URI of an archival object"""
