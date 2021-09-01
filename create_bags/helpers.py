@@ -4,7 +4,7 @@ from shutil import copy2
 
 def format_aspace_date(dates):
     '''
-    Formats ASpace dates.
+    Formats ASpace dates so that they can be parsed by Aquila. If assumes beginning of month or year if a start date, and end of month or year if an end date.
 
     Args:
         dates (dict): ArchivesSpace date JSON
