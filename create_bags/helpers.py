@@ -20,8 +20,12 @@ def format_aspace_date(dates):
         end_date = dates['end']
     if len(begin_date) == 4:
         begin_date = "{}-01-01".format(begin_date)
+    elif len(begin_date) == 7:
+        begin_date = "{}-01".format(begin_date)
     if len(end_date) == 4:
         end_date = "{}-12-31".format(end_date)
+    elif len(end_date) == 7:
+        end_date = "{}-31".format(end_date)
     return begin_date, end_date
 
 
@@ -82,5 +86,5 @@ def copy_tiff_files(source_dir, dest_dir):
     copied_tiffs = []
     for tiff in tiff_files:
         copy2(tiff, Path(dest_dir, tiff.name))
-        copied_tiffs.append(Path(dest_dir, tiff.name))
+        copied_tiffs.append(str(Path(dest_dir, tiff.name)))
     return copied_tiffs
