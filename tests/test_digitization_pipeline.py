@@ -2,14 +2,14 @@ from pathlib import Path
 from shutil import copytree
 
 import pytest
-from create_bags.digitization_pipeline import DigitizationPipeline
 
+# from create_bags.digitization_pipeline import DigitizationPipeline
 
-def test_run(tmp_path, special_projects_dir):
-    tmp_dir = tmp_path / "tmp"
-    tmp_dir.mkdir()
-    digitization_pipeline = DigitizationPipeline(tmp_dir, special_projects_dir)
-    assert digitization_pipeline.run([1, 2]) is True
+# def test_run(tmp_path, special_projects_dir):
+#     tmp_dir = tmp_path / "tmp"
+#     tmp_dir.mkdir()
+#     digitization_pipeline = DigitizationPipeline(tmp_dir, special_projects_dir)
+#     assert digitization_pipeline.run([1, 2]) is True
 
 
 @pytest.fixture
