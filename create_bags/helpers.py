@@ -81,6 +81,6 @@ def copy_tiff_files(source_dir, dest_dir):
         dest_dir.mkdir(parents=True)
     copied_tiffs = []
     for tiff in tiff_files:
-        copy2(Path(source_dir, tiff), Path(dest_dir, tiff))
-        copied_tiffs.append(Path(dest_dir, tiff))
+        copy2(tiff, Path(dest_dir, tiff.name))
+        copied_tiffs.append(Path(dest_dir, tiff.name))
     return copied_tiffs
