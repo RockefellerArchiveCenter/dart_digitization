@@ -52,11 +52,8 @@ def get_closest_dates(archival_object):
 
 
 def create_tag(tag_name, user_value, tag_file="bag-info.txt"):
-    """docstring for create_tag"""
-    tag_dictionary = {"tagFile": tag_file}
-    tag_dictionary['tagName'] = tag_name
-    tag_dictionary['userValue'] = user_value
-    return tag_dictionary
+    """Return dictionary for a custom DART tag"""
+    return {"tagFile": tag_file, "tagName": tag_name, "userValue": user_value}
 
 
 def matching_files(directory, suffix=None, prepend=False):
