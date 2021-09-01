@@ -11,7 +11,6 @@ class BagCreator:
     def __init__(self):
         self.config = ConfigParser()
         self.config.read("local_settings.cfg")
-        self.dest_location = self.config.get("Locations", "dest_location")
         self.dart_command = self.config.get("DART", "dart")
 
     def run(self, refid, rights_ids, files):

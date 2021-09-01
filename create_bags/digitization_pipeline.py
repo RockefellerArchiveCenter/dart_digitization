@@ -29,7 +29,6 @@ class DigitizationPipeline:
             try:
                 master_tiffs = copy_tiff_files(
                     Path(self.root_dir, refid, "master"), Path(self.tmp_dir, refid))
-                print(master_tiffs)
                 master_edited_tiffs = []
                 if Path(self.root_dir, refid, "master_edited").is_dir():
                     master_edited_tiffs = copy_tiff_files(Path(
