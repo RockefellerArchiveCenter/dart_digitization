@@ -34,7 +34,7 @@ class DigitizationPipeline:
                         self.root_dir, refid, "master_edited"), join(self.tmp_dir, refid, "service"))
                 list_of_files = master_tiffs + master_edited_tiffs
                 print(list_of_files)
-                created_bag = BagCreator().run(self.tmp_dir, refid, rights_ids, list_of_files)
+                created_bag = BagCreator().run(refid, rights_ids, list_of_files)
                 list_of_created_bags.append(created_bag)
                 logging.info(
                     "Bag successfully created: {}".format(created_bag))

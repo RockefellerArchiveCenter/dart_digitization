@@ -14,7 +14,7 @@ class BagCreator:
         self.dest_location = self.config.get("Locations", "dest_location")
         self.dart_command = self.config.get("DART", "dart")
 
-    def run(self, top_dir, refid, rights_ids, files):
+    def run(self, refid, rights_ids, files):
         """
         Args:
         refid (str)
@@ -31,7 +31,6 @@ class BagCreator:
         dates = format_aspace_date(get_dates(ao_data))
         self.job_params = self.construct_job_params(rights_ids, files, dates)
         self.create_dart_job()
-        # TODO: we'll probably want to return something else
         return self.refid
 
     def construct_job_params(self, rights_ids, files, dates):
