@@ -25,14 +25,15 @@ class BagCreator:
             "ArchivesSpace", "username"), password=self.config.get(
             "ArchivesSpace", "password"))
         self.refid = refid
-        self.ao_uri = self.as_client.get_ao_uri(self.refid)
+        self.ao_uri = self.as_client.get_uri_from_refid(self.refid)
         ao_data = self.as_client.get_ao_data(self.ao_uri)
-        dates = format_aspace_date(get_dates(ao_data))
-        self.job_params = self.construct_job_params(rights_ids, files, dates)
+        begin_date, end_date = format_aspace_date(get_dates(ao_data))
+        self.job_params = self.construct_job_params(
+            rights_ids, files, begin_date, end_date)
         self.create_dart_job()
         return self.refid
 
-    def construct_job_params(self, rights_ids, files, dates):
+    def construct_job_params(self, rights_ids, files, begin_date, end_date):
         """Formats information for DART job parameters
 
         Args:
@@ -41,14 +42,16 @@ class BagCreator:
             dates (tuple): begin and end dates
 
         Returns a dictionary"""
-        job_params = {"workflowName": "Digitization Workflow"}
-        job_params['packageName'] = "{}.tar".format(self.refid)
-        job_params['files'] = files
+
+        job_params = {
+            "workflowName": "Digitization Workflow",
+            "packageName": "{}.tar".format(
+                self.refid),
+            "files": files}
         tags = []
-        tags.append(create_tag("ArchivesSpace-URI", self.ao_uri))
-        tags.append(create_tag("Start-Date", dates[0]))
-        tags.append(create_tag("End-Date", dates[1]))
-        tags.append(create_tag("Origin", "digitization"))
+        for tagname, uservalue in {"ArchivesSpace-URI": self.ao_uri,
+                                   "Start-Date": begin_date, "End-Date": end_date, "Origin": "digitization"}.items():
+            tags.append(create_tag(tagname, uservalue))
         for rights_id in rights_ids:
             tags.append(create_tag("Rights-ID", str(rights_id)))
         job_params['tags'] = tags

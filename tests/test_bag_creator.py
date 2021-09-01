@@ -8,7 +8,8 @@ def test_construct_job_params():
     rights_ids = [2, 4]
     dates = ("1940-01-01", "1940-06-01")
     files = ["/path/to/file1.tif", "/path/to/file2.tif"]
-    job_params = bag_creator.construct_job_params(rights_ids, files, dates)
+    job_params = bag_creator.construct_job_params(
+        rights_ids, files, dates[0], dates[1])
     assert isinstance(job_params, dict)
     for tag in job_params["tags"]:
         if tag["tagName"] == "Start-Date":
