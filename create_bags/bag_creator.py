@@ -3,7 +3,7 @@ from configparser import ConfigParser
 from subprocess import PIPE, Popen
 
 from .archivesspace import ArchivesSpaceClient
-from .helpers import create_tag, format_aspace_date, get_dates
+from .helpers import create_tag, format_aspace_date, get_closest_dates
 
 
 class BagCreator:
@@ -27,7 +27,7 @@ class BagCreator:
         self.refid = refid
         self.ao_uri = self.as_client.get_uri_from_refid(self.refid)
         ao_data = self.as_client.get_ao_data(self.ao_uri)
-        begin_date, end_date = format_aspace_date(get_dates(ao_data))
+        begin_date, end_date = format_aspace_date(get_closest_dates(ao_data))
         self.job_params = self.construct_job_params(
             rights_ids, files, begin_date, end_date)
         self.create_dart_job()

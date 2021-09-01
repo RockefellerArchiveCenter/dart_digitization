@@ -29,7 +29,7 @@ def format_aspace_date(dates):
     return begin_date, end_date
 
 
-def get_dates(archival_object):
+def get_closest_dates(archival_object):
     '''
     Takes JSON for an archival object and returns a date from that object or its nearest ancestor with a date.
 
