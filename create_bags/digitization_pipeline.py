@@ -1,6 +1,5 @@
 import logging
-from os import listdir
-from os.path import isdir, join
+from pathlib import Path
 
 from .bag_creator import BagCreator
 from .helpers import copy_tiff_files
@@ -19,19 +18,22 @@ class DigitizationPipeline:
 
     def run(self, rights_ids):
         print("Starting run...")
-        refids = [d for d in listdir(self.root_dir) if isdir(
-            join(self.root_dir, d)) and len(d) == 32]
-        print(refids)
+        refids = [
+            d.name for d in Path(
+                self.root_dir).iterdir() if Path(
+                self.root_dir,
+                d).iterdir() and len(
+                d.name) == 32]
         list_of_created_bags = []
         for refid in refids:
             try:
                 master_tiffs = copy_tiff_files(
-                    join(self.root_dir, refid, "master"), join(self.tmp_dir, refid))
+                    Path(self.root_dir, refid, "master"), Path(self.tmp_dir, refid))
                 print(master_tiffs)
                 master_edited_tiffs = []
-                if isdir(join(self.root_dir, refid, "master_edited")):
-                    master_edited_tiffs = copy_tiff_files(join(
-                        self.root_dir, refid, "master_edited"), join(self.tmp_dir, refid, "service"))
+                if Path(self.root_dir, refid, "master_edited").is_dir():
+                    master_edited_tiffs = copy_tiff_files(Path(
+                        self.root_dir, refid, "master_edited"), Path(self.tmp_dir, refid, "service"))
                 list_of_files = master_tiffs + master_edited_tiffs
                 print(list_of_files)
                 created_bag = BagCreator().run(refid, rights_ids, list_of_files)

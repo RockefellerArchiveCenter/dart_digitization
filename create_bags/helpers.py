@@ -1,5 +1,4 @@
-from os import listdir
-from os.path import isfile, join
+from pathlib import Path
 from shutil import copy2
 
 
@@ -66,17 +65,22 @@ def matching_files(directory, suffix=None, prepend=False):
     Returns:
         files (lst): a list of files that matched the identifier.
     """
-    files = sorted([f for f in listdir(directory) if (
-        isfile(join(directory, f)) and not f.startswith((".", "Thumbs")))])
+    HIDDEN_FILES = (
+        ".", "Thumbs")  # files which start with these strings will be skipped
+    files = sorted([f for f in directory.iterdir() if (
+        directory.joinpath(f).is_file() and not str(f.name).startswith(HIDDEN_FILES))])
     if suffix:
-        files = sorted([f for f in files if f.endswith(suffix)])
-    return [join(directory, f) for f in files] if prepend else files
+        files = sorted([f for f in files if str(f.name).endswith(suffix)])
+    return [directory.joinpath(f) for f in files] if prepend else files
 
 
 def copy_tiff_files(source_dir, dest_dir):
+    """Takes Path objects"""
     tiff_files = matching_files(source_dir, suffix="tif")
+    if not dest_dir.is_dir():
+        dest_dir.mkdir(parents=True)
     copied_tiffs = []
     for tiff in tiff_files:
-        copy2(join(source_dir, tiff), join(dest_dir, tiff))
-        copied_tiffs.append(join(dest_dir, tiff))
+        copy2(Path(source_dir, tiff), Path(dest_dir, tiff))
+        copied_tiffs.append(Path(dest_dir, tiff))
     return copied_tiffs
