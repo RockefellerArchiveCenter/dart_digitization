@@ -62,10 +62,7 @@ class BagCreator:
         cmd = "{} -- --stdin".format(self.dart_command)
         child = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, close_fds=True)
         stdout_data, stderr_data = child.communicate(json_input)
-        if stdout_data is not None:
-            if stdout_data.decode('utf-8'):
-                raise Exception(stdout_data.decode('utf-8'))
-        elif stderr_data is not None:
-            raise Exception(stderr_data)
-        # TODO: will probably want to return path of created bag
-        return child.returncode
+        if child.returncode != 0:
+            raise Exception(
+                stdout_data.decode('utf-8'),
+                stderr_data.decode('utf-8'))
