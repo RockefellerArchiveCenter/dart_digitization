@@ -24,7 +24,7 @@ class DigitizationPipeline:
                 self.root_dir,
                 d).iterdir() and len(
                 d.name) == 32]
-        list_of_created_bags = []
+        created_bags = []
         for refid in refids:
             try:
                 master_tiffs = copy_tiff_files(
@@ -34,9 +34,8 @@ class DigitizationPipeline:
                     master_edited_tiffs = copy_tiff_files(Path(
                         self.root_dir, refid, "master_edited"), Path(self.tmp_dir, refid, "service"))
                 list_of_files = master_tiffs + master_edited_tiffs
-                print(list_of_files)
                 created_bag = BagCreator().run(refid, rights_ids, list_of_files)
-                list_of_created_bags.append(created_bag)
+                created_bags.append(created_bag)
                 logging.info(
                     "Bag successfully created: {}".format(created_bag))
             except Exception as e:
