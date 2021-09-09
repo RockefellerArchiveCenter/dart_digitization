@@ -43,18 +43,23 @@ class BagCreator:
 
         Returns a dictionary"""
 
-        job_params = {
-            "workflowName": "Digitization Workflow",
-            "packageName": "{}.tar".format(
-                self.refid),
-            "files": files}
-        tags = []
-        for tagname, uservalue in {"ArchivesSpace-URI": self.ao_uri,
-                                   "Start-Date": begin_date, "End-Date": end_date, "Origin": "digitization"}.items():
-            tags.append(create_tag(tagname, uservalue))
+        job_params = {"workflowName": "Digitization Workflow",
+                      "packageName": "{}.tar".format(self.refid),
+                      "files": files,
+                      "tags": [{"tagFile": "bag-info.txt",
+                                "tagName": "ArchivesSpace-URI",
+                                "userValue": self.ao_uri},
+                               {"tagFile": "bag-info.txt",
+                                "tagName": "Start-Date",
+                                "userValue": begin_date},
+                               {"tagFile": "bag-info.txt",
+                                "tagName": "End-Date",
+                                "userValue": end_date},
+                               {"tagFile": "bag-info.txt",
+                                "tagName": "Origin",
+                                "userValue": "digitization"}]}
         for rights_id in rights_ids:
-            tags.append(create_tag("Rights-ID", str(rights_id)))
-        job_params['tags'] = tags
+            job_params['tags'].append(create_tag("Rights-ID", str(rights_id)))
         return job_params
 
     def create_dart_job(self):
