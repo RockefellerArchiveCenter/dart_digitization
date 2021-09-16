@@ -7,7 +7,7 @@ from .helpers import copy_tiff_files
 
 class DigitizationPipeline:
 
-    def __init__(self, tmp_dir, root_dir):
+    def __init__(self, root_dir, tmp_dir):
         logging.basicConfig(
             datefmt='%m/%d/%Y %I:%M:%S %p',
             filename='bag_creator.log',
