@@ -12,6 +12,7 @@ class BagCreator:
         self.config = ConfigParser()
         self.config.read("local_settings.cfg")
         self.dart_command = self.config.get("DART", "dart")
+        self.workflow = self.config.get("DART", "worfklow")
 
     def run(self, refid, rights_ids, files):
         """
@@ -43,7 +44,7 @@ class BagCreator:
 
         Returns a dictionary"""
 
-        job_params = {"workflowName": "Digitization Workflow",
+        job_params = {"workflowName": self.workflow,
                       "packageName": "{}.tar".format(self.refid),
                       "files": files,
                       "tags": [{"tagFile": "bag-info.txt",

@@ -9,3 +9,4 @@ dest_location = some/path/
 
 [DART]
 dart = /path/to/DART
+workflow = "Workflow Name"
