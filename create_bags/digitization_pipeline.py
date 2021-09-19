@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from .bag_creator import BagCreator
-from .helpers import copy_tiff_files
+from .helpers import copy_tiff_files, remove_copied_files
 
 
 class DigitizationPipeline:
@@ -24,7 +24,6 @@ class DigitizationPipeline:
                 self.root_dir,
                 d).iterdir() and len(
                 d.name) == 32]
-        created_bags = []
         for refid in refids:
             try:
                 master_tiffs = copy_tiff_files(
@@ -35,9 +34,11 @@ class DigitizationPipeline:
                         self.root_dir, refid, "master_edited"), Path(self.tmp_dir, refid, "service"))
                 list_of_files = master_tiffs + master_edited_tiffs
                 created_bag = BagCreator().run(refid, rights_ids, list_of_files)
-                created_bags.append(created_bag)
                 logging.info(
                     "Bag successfully created: {}".format(created_bag))
+                remove_copied_files(list_of_files)
+                logging.info(
+                    "Files successfully removed from {}/{}".format(self.tmp_dir, refid))
             except Exception as e:
                 print(e)
                 logging.error("Error for ref_id {}: {}".format(refid, e))
