@@ -20,7 +20,7 @@ def main():
         type=int,
         required=True)
     args = parser.parse_args()
-    DigitizationPipeline(args.root_dir, args.tmp_dir).run()
+    DigitizationPipeline(args.root_dir, args.tmp_dir).run(args.list)
 
 
 if __name__ == "__main__":

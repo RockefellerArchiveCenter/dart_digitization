@@ -37,6 +37,9 @@ class DigitizationPipeline:
                 logging.info(
                     "Bag successfully created: {}".format(created_bag))
                 remove_copied_files(list_of_files)
+                if Path(self.tmp_dir, refid, "service").is_dir():
+                    Path(self.tmp_dir, refid, "service").rmdir()
+                Path(self.tmp_dir, refid).rmdir()
                 logging.info(
                     "Files successfully removed from {}/{}".format(self.tmp_dir, refid))
             except Exception as e:

@@ -12,7 +12,7 @@ class BagCreator:
         self.config = ConfigParser()
         self.config.read("local_settings.cfg")
         self.dart_command = self.config.get("DART", "dart")
-        self.workflow = self.config.get("DART", "worfklow")
+        self.workflow = self.config.get("DART", "workflow")
 
     def run(self, refid, rights_ids, files):
         """
