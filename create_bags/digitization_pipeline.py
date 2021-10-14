@@ -1,8 +1,9 @@
 import logging
 from pathlib import Path
+from shutil import rmtree
 
 from .bag_creator import BagCreator
-from .helpers import copy_tiff_files, remove_copied_files
+from .helpers import copy_tiff_files
 
 
 class DigitizationPipeline:
@@ -26,22 +27,18 @@ class DigitizationPipeline:
                 d.name) == 32]
         for refid in refids:
             try:
+                dir_to_bag = Path(self.tmp_dir, refid)
                 master_tiffs = copy_tiff_files(
-                    Path(self.root_dir, refid, "master"), Path(self.tmp_dir, refid))
+                    Path(self.root_dir, refid, "master"), dir_to_bag)
                 master_edited_tiffs = []
                 if Path(self.root_dir, refid, "master_edited").is_dir():
                     master_edited_tiffs = copy_tiff_files(Path(
                         self.root_dir, refid, "master_edited"), Path(self.tmp_dir, refid, "service"))
                 list_of_files = master_tiffs + master_edited_tiffs
                 created_bag = BagCreator().run(refid, rights_ids, list_of_files)
-                logging.info(
-                    "Bag successfully created: {}".format(created_bag))
-                remove_copied_files(list_of_files)
-                if Path(self.tmp_dir, refid, "service").is_dir():
-                    Path(self.tmp_dir, refid, "service").rmdir()
-                Path(self.tmp_dir, refid).rmdir()
-                logging.info(
-                    "Files successfully removed from {}/{}".format(self.tmp_dir, refid))
+                logging.info(f"Bag successfully created: {created_bag}")
+                rmtree(dir_to_bag)
+                logging.info("Directory {dir_to_bag} successfully removed")
             except Exception as e:
                 print(e)
-                logging.error("Error for ref_id {}: {}".format(refid, e))
+                logging.error(f"Error for ref_id {refid}: {e}")

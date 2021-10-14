@@ -85,11 +85,3 @@ def copy_tiff_files(source_dir, dest_dir):
         copy2(tiff, Path(dest_dir, tiff.name))
         copied_tiffs.append(str(Path(dest_dir, tiff.name)))
     return copied_tiffs
-
-
-def remove_copied_files(list_of_files):
-    """Remove files from a list
-
-    Takes list of files that have full paths"""
-    for file in list_of_files:
-        Path(file).unlink()
