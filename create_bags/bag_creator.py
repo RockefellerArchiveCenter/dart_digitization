@@ -1,6 +1,6 @@
+import configparser
 import json
 import logging
-from configparser import ConfigParser
 from subprocess import PIPE, Popen
 
 from .archivesspace import ArchivesSpaceClient
@@ -15,10 +15,16 @@ class BagCreator:
             filename='bag_creator.log',
             format='%(asctime)s %(message)s',
             level=logging.INFO)
-        self.config = ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.read("local_settings.cfg")
-        self.dart_command = self.config["DART"]["dart"]
-        self.workflow = self.config["DART"]["workflow"]
+        if "DART" in self.config.sections():
+            self.dart_command = self.config["DART"]["dart"]
+            self.workflow = self.config["DART"]["workflow"]
+        else:
+            if len(self.config.sections()) == 0:
+                raise Exception("No config file found")
+            else:
+                raise Exception("DART not in config file")
 
     def run(self, refid, rights_ids, files):
         """
