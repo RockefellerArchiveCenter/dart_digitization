@@ -1,4 +1,5 @@
 import json
+import logging
 from configparser import ConfigParser
 from subprocess import PIPE, Popen
 
@@ -9,6 +10,11 @@ from .helpers import create_tag, format_aspace_date, get_closest_dates
 class BagCreator:
 
     def __init__(self):
+        logging.basicConfig(
+            datefmt='%m/%d/%Y %I:%M:%S %p',
+            filename='bag_creator.log',
+            format='%(asctime)s %(message)s',
+            level=logging.INFO)
         self.config = ConfigParser()
         self.config.read("local_settings.cfg")
         self.dart_command = self.config["DART"]["dart"]
@@ -21,6 +27,7 @@ class BagCreator:
         rights_ids (array)
         """
         # directory_to_bag = "some directory"
+        logging.info(f"Getting ASpace data for {refid}...")
         self.as_client = ArchivesSpaceClient(baseurl=self.config.get(
             "ArchivesSpace", "baseurl"), username=self.config.get(
             "ArchivesSpace", "username"), password=self.config.get(
@@ -29,8 +36,10 @@ class BagCreator:
         self.ao_uri = self.as_client.get_uri_from_refid(self.refid)
         ao_data = self.as_client.get_ao_data(self.ao_uri)
         begin_date, end_date = format_aspace_date(get_closest_dates(ao_data))
+        logging.info(f"Getting job params for {refid}...")
         self.job_params = self.construct_job_params(
             rights_ids, files, begin_date, end_date)
+        logging.info(f"Creating DART job for {refid}...")
         self.create_dart_job()
         return self.refid
 

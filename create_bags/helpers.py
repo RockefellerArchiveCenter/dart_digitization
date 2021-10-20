@@ -4,7 +4,7 @@ from shutil import copy2
 
 def format_aspace_date(dates):
     '''
-    Formats ASpace dates so that they can be parsed by Aquila. If assumes beginning of month or year if a start date, and end of month or year if an end date.
+    Formats ASpace dates so that they can be parsed by Aquila. Assumes beginning of month or year if a start date, and end of month or year if an end date.
 
     Args:
         dates (dict): ArchivesSpace date JSON
@@ -60,7 +60,7 @@ def matching_files(directory, suffix=None, prepend=False):
     """Get a list of files that start with a specific prefix, optionally removing
     any files that end in `_001`.
     Args:
-        directory (str): The directory containing files.
+        directory (Path object): The directory containing files.
         suffix (str): A suffix (file extension) to match filenames against.
         prepend (bool): Add the directory to the filepaths returned
     Returns:

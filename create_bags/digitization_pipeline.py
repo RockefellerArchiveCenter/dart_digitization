@@ -27,6 +27,7 @@ class DigitizationPipeline:
                 d.name) == 32]
         for refid in refids:
             try:
+                logging.info(f"Starting {refid}...")
                 dir_to_bag = Path(self.tmp_dir, refid)
                 master_tiffs = copy_tiff_files(
                     Path(self.root_dir, refid, "master"), dir_to_bag)
@@ -35,10 +36,15 @@ class DigitizationPipeline:
                     master_edited_tiffs = copy_tiff_files(Path(
                         self.root_dir, refid, "master_edited"), Path(self.tmp_dir, refid, "service"))
                 list_of_files = master_tiffs + master_edited_tiffs
-                created_bag = BagCreator().run(refid, rights_ids, list_of_files)
+                logging.info(
+                    f"{len(list_of_files)} files copied successfully for {refid}")
+                bag_creator = BagCreator()
+                logging.info(
+                    f"Using DART installation {bag_creator.dart_command} with workflow {bag_creator.workflow}")
+                created_bag = bag_creator.run(refid, rights_ids, list_of_files)
                 logging.info(f"Bag successfully created: {created_bag}")
                 rmtree(dir_to_bag)
-                logging.info("Directory {dir_to_bag} successfully removed")
+                logging.info(f"Directory {dir_to_bag} successfully removed")
             except Exception as e:
                 print(e)
                 logging.error(f"Error for ref_id {refid}: {e}")
