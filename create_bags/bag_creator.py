@@ -81,8 +81,8 @@ class BagCreator:
     def create_dart_job(self):
         """Runs a DART job"""
         json_input = (json.dumps(self.job_params) + "\n").encode()
-        cmd = "{} -- --stdin".format(self.dart_command)
-        child = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, close_fds=True)
+        cmd = [self.dart_command, "--", "--stdin"]
+        child = Popen(cmd, stdin=PIPE, stdout=PIPE, close_fds=True)
         stdout_data, stderr_data = child.communicate(json_input)
         if child.returncode != 0:
             raise Exception(
