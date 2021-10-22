@@ -6,4 +6,4 @@ password = admin
 
 [DART]
 dart = /path/to/DART
-workflow = "Workflow Name"
+workflow = Workflow Name
