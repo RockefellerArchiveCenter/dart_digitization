@@ -46,7 +46,7 @@ def get_closest_dates(archival_object):
     else:
         for a in archival_object.get("ancestors"):
             if a.get("_resolved").get("dates"):
-                dates = a['dates'][0]
+                dates = a['_resolved']['dates'][0]
                 break
     return dates
 
