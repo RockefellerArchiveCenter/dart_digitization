@@ -26,7 +26,7 @@ class BagCreator:
             else:
                 raise Exception("DART not in config file")
 
-    def run(self, refid, rights_ids, files):
+    def run(self, refid, rights_ids, files, create_bag=True):
         """
         Args:
         refid (str)
@@ -45,8 +45,13 @@ class BagCreator:
         logging.info(f"Getting job params for {refid}...")
         self.job_params = self.construct_job_params(
             rights_ids, files, begin_date, end_date)
-        logging.info(f"Creating DART job for {refid}...")
-        self.create_dart_job()
+        if create_bag:
+            logging.info(f"Creating DART job for {refid}...")
+            self.create_dart_job()
+        else:
+            with open(f"{self.refid}.json", "w") as jsonfile:
+                json.dump(self.job_params, jsonfile)
+            logging.info(f"Created {refid}.json")
         return self.refid
 
     def construct_job_params(self, rights_ids, files, begin_date, end_date):
