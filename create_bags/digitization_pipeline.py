@@ -38,7 +38,7 @@ class DigitizationPipeline:
                 created_bag = BagCreator().run(refid, rights_ids, list_of_files)
                 logging.info(f"Bag successfully created: {created_bag}")
                 rmtree(dir_to_bag)
-                logging.info("Directory {dir_to_bag} successfully removed")
+                logging.info(f"Directory {dir_to_bag} successfully removed")
             except Exception as e:
                 print(e)
                 logging.error(f"Error for ref_id {refid}: {e}")
