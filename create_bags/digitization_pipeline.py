@@ -2,8 +2,9 @@ import logging
 from pathlib import Path
 from shutil import rmtree
 
+from .aws_upload.S3Uploader import upload_pdf_to_s3
 from .bag_creator import BagCreator
-from .helpers import copy_tiff_files
+from .helpers import copy_tiff_files, get_access_pdf
 
 
 class DigitizationPipeline:
@@ -28,6 +29,9 @@ class DigitizationPipeline:
         for refid in refids:
             try:
                 dir_to_bag = Path(self.tmp_dir, refid)
+                pdf_file = get_access_pdf()
+                upload_pdf_to_s3(pdf_file)
+                logging.info(f"PDF successfully uploaded: {pdf_file.name}")
                 master_tiffs = copy_tiff_files(
                     Path(self.root_dir, refid, "master"), dir_to_bag)
                 master_edited_tiffs = []
