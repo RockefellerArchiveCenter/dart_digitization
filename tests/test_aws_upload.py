@@ -16,3 +16,9 @@ def test_upload_pdf_to_s3(tmp_path):
     s3.create_bucket(Bucket=config["AWS"]["bucket"])
     s3_upload = S3Uploader().upload_pdf_to_s3(file_to_upload)
     assert s3_upload
+    assert object_in_bucket(s3, config["AWS"]["bucket"], "pdfs/test.txt")
+
+
+def object_in_bucket(s3, bucket, object_path):
+    s3.Object(bucket, object_path).load()
+    return True
