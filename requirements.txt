@@ -4,3 +4,4 @@ coverage==6.1.2
 moto==2.2.16
 pytest==6.2.5
 pytest-mock==3.6.1
+shortuuid==1.0.8 
