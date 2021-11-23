@@ -1,4 +1,5 @@
 import logging
+from configparser import ConfigParser
 from pathlib import Path
 from shutil import rmtree
 
@@ -13,6 +14,8 @@ from .helpers import copy_tiff_files, get_access_pdf
 class DigitizationPipeline:
 
     def __init__(self, root_dir, tmp_dir):
+        self.config = ConfigParser()
+        self.config.read("local_settings.cfg")
         logging.basicConfig(
             datefmt='%m/%d/%Y %I:%M:%S %p',
             filename='bag_creator.log',
@@ -35,7 +38,7 @@ class DigitizationPipeline:
                 d.name) == 32]
         for refid in refids:
             try:
-                ao_uri = self.as_client.get_uri_from_refid(self.refid)
+                ao_uri = self.as_client.get_uri_from_refid(refid)
                 dimes_identifier = shortuuid.uuid(ao_uri)
                 pdf_path = get_access_pdf(
                     Path(self.root_dir, refid, "service_edited"))
