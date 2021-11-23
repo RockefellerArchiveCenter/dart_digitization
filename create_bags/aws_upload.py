@@ -1,5 +1,4 @@
 from configparser import ConfigParser
-from pathlib import Path
 
 import boto3
 from botocore.exceptions import ClientError
@@ -13,13 +12,13 @@ class S3Uploader(object):
                             aws_access_key_id=self.config["AWS"]["access_key"], aws_secret_access_key=self.config["AWS"]["secret_key"])
         self.bucket = s3.Bucket(self.config["AWS"]["bucket"])
 
-    def upload_pdf_to_s3(self, filepath):
+    def upload_pdf_to_s3(self, filepath, object_name):
         """Uploads a PDF file to a 'pdf' directory
 
         Args:
             filepath (Path obj): full filepath to the PDF to upload
+            object_name (str): object name (including directories) to be added to bucket
         """
-        object_name = str(Path("pdfs", filepath.name))
         try:
             self.bucket.upload_file(str(filepath), object_name, ExtraArgs={
                                     'ContentType': "application/pdf"})

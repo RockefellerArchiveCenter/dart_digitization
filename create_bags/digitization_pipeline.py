@@ -2,7 +2,10 @@ import logging
 from pathlib import Path
 from shutil import rmtree
 
-from .aws_upload.S3Uploader import upload_pdf_to_s3
+import shortuuid
+
+from .archivesspace import ArchivesSpaceClient
+from .aws_upload import S3Uploader
 from .bag_creator import BagCreator
 from .helpers import copy_tiff_files, get_access_pdf
 
@@ -17,6 +20,10 @@ class DigitizationPipeline:
             level=logging.INFO)
         self.tmp_dir = tmp_dir
         self.root_dir = root_dir
+        self.as_client = ArchivesSpaceClient(baseurl=self.config.get(
+            "ArchivesSpace", "baseurl"), username=self.config.get(
+            "ArchivesSpace", "username"), password=self.config.get(
+            "ArchivesSpace", "password"))
 
     def run(self, rights_ids):
         print("Starting run...")
@@ -28,10 +35,15 @@ class DigitizationPipeline:
                 d.name) == 32]
         for refid in refids:
             try:
+                ao_uri = self.as_client.get_uri_from_refid(self.refid)
+                dimes_identifier = shortuuid.uuid(ao_uri)
+                pdf_path = get_access_pdf(
+                    Path(self.root_dir, refid, "service_edited"))
+                S3Uploader().upload_pdf_to_s3(
+                    pdf_path, f"pdfs/{dimes_identifier}.pdf")
                 dir_to_bag = Path(self.tmp_dir, refid)
-                pdf_file = get_access_pdf()
-                upload_pdf_to_s3(pdf_file)
-                logging.info(f"PDF successfully uploaded: {pdf_file.name}")
+                logging.info(
+                    f"PDF successfully uploaded: {dimes_identifier}.pdf")
                 master_tiffs = copy_tiff_files(
                     Path(self.root_dir, refid, "master"), dir_to_bag)
                 master_edited_tiffs = []
