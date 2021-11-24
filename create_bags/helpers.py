@@ -85,3 +85,19 @@ def copy_tiff_files(source_dir, dest_dir):
         copy2(tiff, Path(dest_dir, tiff.name))
         copied_tiffs.append(str(Path(dest_dir, tiff.name)))
     return copied_tiffs
+
+
+def get_access_pdf(pdf_dir):
+    """Gets a PDF file from a directory. Fails if there are multiple PDF files
+
+    Args:
+        pdf_dir (Path obj): directory containing PDF file
+    """
+    pdf_files = [f for f in pdf_dir.iterdir() if f.is_file(
+    ) and not f.name.startswith(".") and f.name.endswith(".pdf")]
+    if len(pdf_files) == 0:
+        raise Exception("No PDF file found")
+    elif len(pdf_files) > 1:
+        raise Exception("More than one PDF file found")
+    else:
+        return pdf_files[0]
