@@ -43,7 +43,7 @@ class DigitizationPipeline:
                 pdf_path = get_access_pdf(
                     Path(self.root_dir, refid, "service_edited"))
                 S3Uploader().upload_pdf_to_s3(
-                    pdf_path, f"pdfs/{dimes_identifier}.pdf")
+                    pdf_path, f"pdfs/{dimes_identifier}")
                 dir_to_bag = Path(self.tmp_dir, refid)
                 logging.info(
                     f"PDF successfully uploaded: {dimes_identifier}.pdf")
