@@ -6,4 +6,10 @@ password = admin
 
 [DART]
 dart = /path/to/DART
-workflow = "Workflow Name"
+workflow = Workflow Name
+
+[AWS]
+region_name = us-east-1
+access_key = 123456789
+secret_key = 987654321
+bucket = rac-iiif
