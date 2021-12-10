@@ -13,3 +13,6 @@ region_name = us-east-1
 access_key = 123456789
 secret_key = 987654321
 bucket = rac-iiif
+
+[Ignore]
+ignore_list = /path/to/ignore_list.txt
