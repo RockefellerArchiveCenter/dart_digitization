@@ -1,6 +1,5 @@
 import json
 from configparser import ConfigParser
-from pathlib import Path
 from subprocess import PIPE, Popen
 
 from .archivesspace import ArchivesSpaceClient
@@ -14,7 +13,6 @@ class BagCreator:
         self.config.read("local_settings.cfg")
         self.dart_command = self.config["DART"]["dart"]
         self.workflow = self.config["DART"]["workflow"]
-        self.bagging_directory = self.config["DART"]["bagging_directory"]
 
     def run(self, refid, rights_ids, files):
         """
@@ -34,7 +32,6 @@ class BagCreator:
         self.job_params = self.construct_job_params(
             rights_ids, files, begin_date, end_date)
         self.create_dart_job()
-        Path(self.bagging_directory, f"{self.refid}.tar").unlink()
         return self.refid
 
     def construct_job_params(self, rights_ids, files, begin_date, end_date):

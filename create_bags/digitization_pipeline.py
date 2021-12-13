@@ -28,6 +28,7 @@ class DigitizationPipeline:
             "ArchivesSpace", "username"), password=self.config.get(
             "ArchivesSpace", "password"))
         self.ignore_filepath = self.config.get("Ignore", "ignore_list")
+        self.bagging_directory = self.config["DART"]["bagging_directory"]
 
     def run(self, rights_ids):
         print("Starting run...")
@@ -58,10 +59,13 @@ class DigitizationPipeline:
                 list_of_files = master_tiffs + master_edited_tiffs
                 created_bag = BagCreator().run(refid, rights_ids, list_of_files)
                 logging.info(f"Bag successfully created: {created_bag}")
+                tmp_bag = Path(self.bagging_directory, f"{refid}.tar")
+                tmp_bag.unlink()
                 rmtree(dir_to_bag)
                 with open(self.ignore_filepath, "a") as f:
                     f.write(f"\n{refid}")
-                logging.info(f"Directory {dir_to_bag} successfully removed")
+                logging.info(
+                    f"Directory {dir_to_bag} and file {tmp_bag} successfully removed")
             except Exception as e:
                 print(e)
                 logging.error(f"Error for ref_id {refid}: {e}")
