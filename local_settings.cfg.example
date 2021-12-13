@@ -7,6 +7,8 @@ password = admin
 [DART]
 dart = /path/to/DART
 workflow = Workflow Name
+bagging_directory = /path/to/.dart/bags
+
 
 [AWS]
 region_name = us-east-1
