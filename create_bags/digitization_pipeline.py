@@ -27,15 +27,18 @@ class DigitizationPipeline:
             "ArchivesSpace", "baseurl"), username=self.config.get(
             "ArchivesSpace", "username"), password=self.config.get(
             "ArchivesSpace", "password"))
+        self.ignore_filepath = self.config.get("Ignore", "ignore_list")
+        self.bagging_directory = self.config["DART"]["bagging_directory"]
 
     def run(self, rights_ids):
         print("Starting run...")
+        self.ignore_list = self.get_ignore_list()
         refids = [
             d.name for d in Path(
                 self.root_dir).iterdir() if Path(
                 self.root_dir,
                 d).iterdir() and len(
-                d.name) == 32]
+                d.name) == 32 and d.name not in self.ignore_list]
         for refid in refids:
             try:
                 ao_uri = self.as_client.get_uri_from_refid(refid)
@@ -56,8 +59,21 @@ class DigitizationPipeline:
                 list_of_files = master_tiffs + master_edited_tiffs
                 created_bag = BagCreator().run(refid, rights_ids, list_of_files)
                 logging.info(f"Bag successfully created: {created_bag}")
+                tmp_bag = Path(self.bagging_directory, f"{refid}.tar")
+                tmp_bag.unlink()
                 rmtree(dir_to_bag)
-                logging.info(f"Directory {dir_to_bag} successfully removed")
+                with open(self.ignore_filepath, "a") as f:
+                    f.write(f"\n{refid}")
+                logging.info(
+                    f"Directory {dir_to_bag} and file {tmp_bag} successfully removed")
             except Exception as e:
                 print(e)
                 logging.error(f"Error for ref_id {refid}: {e}")
+
+    def get_ignore_list(self):
+        """Parses a text file whose filepath is provided in the config
+
+        Returns a list"""
+
+        ignore_list = open(self.ignore_filepath).readlines()
+        return [i.replace('\n', '') for i in ignore_list]

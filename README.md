@@ -1,6 +1,6 @@
 # DART for Digitized Content
 
-Uses [DART](https://github.com/APTrust/dart) to create bags of digitized content that will be sent to [Zorya](https://github.com/RockefellerArchiveCenter/zorya). 
+Uses [DART](https://github.com/APTrust/dart) to create bags of digitized content that will be sent to [Zorya](https://github.com/RockefellerArchiveCenter/zorya) and upload PDF files to an S3 bucket.
 
 
 ## Requirements
@@ -24,7 +24,7 @@ $ python dart_pipeline.py /path/to/original/files /path/to/tmp -l 3 9
 
 ### Expected structure of original files
 
-This pipeline expects to be pointed at a directory containing subdirectories (named by ArchivesSpace ref ids) for archival object components, each of which contains a subdirectory named `master` containing original TIFF files. Optionally, there may be a `master_edited` subdirectory which contains mezzanine TIFF files.
+This pipeline expects to be pointed at a directory containing subdirectories (named by ArchivesSpace ref ids) for archival object components, each of which contains a subdirectory named `master` containing original TIFF files as well as a `service_edited` directory containing a multi-page PDF file. Optionally, there may be a `master_edited` subdirectory which contains mezzanine TIFF files.
 
 
 ### Configuring DART to work with this pipeline

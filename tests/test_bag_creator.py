@@ -23,5 +23,5 @@ def test_run_method(mocker):
     mocker.patch('create_bags.bag_creator.BagCreator.create_dart_job')
     mocker.patch('create_bags.bag_creator.ArchivesSpaceClient')
     create_bag = BagCreator().run(
-        [2, 4], ["/path/to/file1.tif", "/path/to/file2.tif"], ("1940-01-01", "1940-06-01"))
+        "329d56f6f0424bfb8551d148a125dabb", [2, 4], ["/path/to/file1.tif", "/path/to/file2.tif"])
     assert create_bag

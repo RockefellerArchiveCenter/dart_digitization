@@ -70,6 +70,6 @@ class BagCreator:
         child = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, close_fds=True)
         stdout_data, stderr_data = child.communicate(json_input)
         if child.returncode != 0:
-            raise Exception(
-                stdout_data.decode('utf-8'),
-                stderr_data.decode('utf-8'))
+            stdout_message = stdout_data.decode('utf-8') if stdout_data else ""
+            stderr_message = stderr_data.decode('utf-8') if stderr_data else ""
+            raise Exception(stdout_message, stderr_message)
