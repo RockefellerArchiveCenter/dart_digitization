@@ -1,34 +1,24 @@
 import json
-from configparser import ConfigParser
 from subprocess import PIPE, Popen
 
-from .archivesspace import ArchivesSpaceClient
-from .helpers import create_tag, format_aspace_date, get_closest_dates
+from .helpers import create_tag
 
 
 class BagCreator:
 
-    def __init__(self):
-        self.config = ConfigParser()
-        self.config.read("local_settings.cfg")
-        self.dart_command = self.config["DART"]["dart"]
-        self.workflow = self.config["DART"]["workflow"]
+    def __init__(self, workflow_json, tmp_dir):
+        self.workflow_json = workflow_json
+        self.tmp_dir = tmp_dir
 
-    def run(self, refid, rights_ids, files):
+    def run(self, refid, ao_uri, begin_date, end_date, rights_ids, files):
         """
         Args:
         refid (str)
         rights_ids (array)
         """
         # directory_to_bag = "some directory"
-        self.as_client = ArchivesSpaceClient(baseurl=self.config.get(
-            "ArchivesSpace", "baseurl"), username=self.config.get(
-            "ArchivesSpace", "username"), password=self.config.get(
-            "ArchivesSpace", "password"))
         self.refid = refid
-        self.ao_uri = self.as_client.get_uri_from_refid(self.refid)
-        ao_data = self.as_client.get_ao_data(self.ao_uri)
-        begin_date, end_date = format_aspace_date(get_closest_dates(ao_data))
+        self.ao_uri = ao_uri
         self.job_params = self.construct_job_params(
             rights_ids, files, begin_date, end_date)
         self.create_dart_job()
@@ -44,8 +34,7 @@ class BagCreator:
 
         Returns a dictionary"""
 
-        job_params = {"workflowName": self.workflow,
-                      "packageName": "{}.tar".format(self.refid),
+        job_params = {"packageName": "{}.tar".format(self.refid),
                       "files": files,
                       "tags": [{"tagFile": "bag-info.txt",
                                 "tagName": "ArchivesSpace-URI",
@@ -65,10 +54,10 @@ class BagCreator:
 
     def create_dart_job(self):
         """Runs a DART job"""
-        json_input = (json.dumps(self.job_params) + "\n").encode()
-        cmd = "{} -- --stdin".format(self.dart_command)
+        job_json_input = (json.dumps(self.job_params) + "\n").encode()
+        cmd = f"dart-runner --workflow={self.workflow_json} --output-dir={self.tmp_dir}"
         child = Popen(cmd, shell=True, stdin=PIPE, stdout=PIPE, close_fds=True)
-        stdout_data, stderr_data = child.communicate(json_input)
+        stdout_data, stderr_data = child.communicate(job_json_input)
         if child.returncode != 0:
             stdout_message = stdout_data.decode('utf-8') if stdout_data else ""
             stderr_message = stderr_data.decode('utf-8') if stderr_data else ""

@@ -5,13 +5,7 @@ from create_bags.digitization_pipeline import DigitizationPipeline
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Uses DART to create bags of digitized content that will be sent to Zorya.")
-    parser.add_argument(
-        "root_dir",
-        help="A directory containing subdirectories (named using ref ids) for archival objects.")
-    parser.add_argument(
-        "tmp_dir",
-        help="A directory in which to create generated image derivatives and manifests.")
+        description="Uses DART Runner to create bags of digitized content that will be sent to Zorya.")
     parser.add_argument(
         '-l',
         '--list',
@@ -20,7 +14,7 @@ def main():
         type=int,
         required=True)
     args = parser.parse_args()
-    DigitizationPipeline(args.root_dir, args.tmp_dir).run(args.list)
+    DigitizationPipeline().run(args.list)
 
 
 if __name__ == "__main__":
