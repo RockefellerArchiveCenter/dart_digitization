@@ -16,7 +16,6 @@ class BagCreator:
         refid (str)
         rights_ids (array)
         """
-        # directory_to_bag = "some directory"
         self.refid = refid
         self.ao_uri = ao_uri
         self.job_params = self.construct_job_params(
