@@ -6,7 +6,7 @@ Uses [DART](https://github.com/APTrust/dart) to create bags of digitized content
 ## Requirements
 
 The entire suite has the following system dependencies:
-- Python 3 (tested on Python 3.6)
+- Python 3 (tested on Python 3.10)
 - ArchivesSnake (Python library) (0.9.1 or greater)
 - [DART](https://github.com/APTrust/dart)
 
