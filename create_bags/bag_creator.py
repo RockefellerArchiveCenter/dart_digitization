@@ -1,34 +1,23 @@
 import json
-from configparser import ConfigParser
 from subprocess import PIPE, Popen
 
-from .archivesspace import ArchivesSpaceClient
-from .helpers import create_tag, format_aspace_date, get_closest_dates
+from .helpers import create_tag
 
 
 class BagCreator:
 
-    def __init__(self):
-        self.config = ConfigParser()
-        self.config.read("local_settings.cfg")
-        self.dart_command = self.config["DART"]["dart"]
-        self.workflow = self.config["DART"]["workflow"]
+    def __init__(self, dart_command, workflow):
+        self.dart_command = dart_command
+        self.workflow = workflow
 
-    def run(self, refid, rights_ids, files):
+    def run(self, refid, ao_uri, begin_date, end_date, rights_ids, files):
         """
         Args:
         refid (str)
         rights_ids (array)
         """
-        # directory_to_bag = "some directory"
-        self.as_client = ArchivesSpaceClient(baseurl=self.config.get(
-            "ArchivesSpace", "baseurl"), username=self.config.get(
-            "ArchivesSpace", "username"), password=self.config.get(
-            "ArchivesSpace", "password"))
         self.refid = refid
-        self.ao_uri = self.as_client.get_uri_from_refid(self.refid)
-        ao_data = self.as_client.get_ao_data(self.ao_uri)
-        begin_date, end_date = format_aspace_date(get_closest_dates(ao_data))
+        self.ao_uri = ao_uri
         self.job_params = self.construct_job_params(
             rights_ids, files, begin_date, end_date)
         self.create_dart_job()

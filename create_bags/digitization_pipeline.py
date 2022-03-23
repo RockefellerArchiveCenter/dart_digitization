@@ -8,7 +8,8 @@ import shortuuid
 from .archivesspace import ArchivesSpaceClient
 from .aws_upload import S3Uploader
 from .bag_creator import BagCreator
-from .helpers import copy_tiff_files, get_access_pdf
+from .helpers import (copy_tiff_files, format_aspace_date, get_access_pdf,
+                      get_closest_dates)
 
 
 class DigitizationPipeline:
@@ -23,12 +24,13 @@ class DigitizationPipeline:
             level=logging.INFO)
         self.tmp_dir = tmp_dir
         self.root_dir = root_dir
-        self.as_client = ArchivesSpaceClient(baseurl=self.config.get(
-            "ArchivesSpace", "baseurl"), username=self.config.get(
-            "ArchivesSpace", "username"), password=self.config.get(
-            "ArchivesSpace", "password"))
-        self.ignore_filepath = self.config.get("Ignore", "ignore_list")
+        self.as_client = ArchivesSpaceClient(
+            self.config["ArchivesSpace"]["baseurl"], self.config["ArchivesSpace"]["username"], self.config["ArchivesSpace"]["password"])
+        self.s3_uploader = S3Uploader(
+            self.config["AWS"]["region_name"], self.config["AWS"]["access_key"], self.config["AWS"]["secret_key"], self.config["AWS"]["bucket"])
+        self.ignore_filepath = self.config["Ignore"]["ignore_list"]
         self.bagging_directory = self.config["DART"]["bagging_directory"]
+        self.workflow_json = self.config["DART"]["workflow"]
 
     def run(self, rights_ids):
         print("Starting run...")
@@ -47,17 +49,15 @@ class DigitizationPipeline:
                     Path(self.root_dir, refid, "service_edited"))
                 S3Uploader().upload_pdf_to_s3(
                     pdf_path, f"pdfs/{dimes_identifier}")
-                dir_to_bag = Path(self.tmp_dir, refid)
                 logging.info(
                     f"PDF successfully uploaded: {dimes_identifier}.pdf")
-                master_tiffs = copy_tiff_files(
-                    Path(self.root_dir, refid, "master"), dir_to_bag)
-                master_edited_tiffs = []
-                if Path(self.root_dir, refid, "master_edited").is_dir():
-                    master_edited_tiffs = copy_tiff_files(Path(
-                        self.root_dir, refid, "master_edited"), Path(self.tmp_dir, refid, "service"))
-                list_of_files = master_tiffs + master_edited_tiffs
-                created_bag = BagCreator().run(refid, rights_ids, list_of_files)
+                dir_to_bag = Path(self.tmp_dir, refid)
+                list_of_files = self.add_files_to_dir(refid, dir_to_bag)
+                ao_data = self.as_client.get_ao_data(self.ao_uri)
+                begin_date, end_date = format_aspace_date(
+                    get_closest_dates(ao_data))
+                created_bag = BagCreator().run(
+                    refid, ao_uri, ao_data, rights_ids, list_of_files)
                 logging.info(f"Bag successfully created: {created_bag}")
                 tmp_bag = Path(self.bagging_directory, f"{refid}.tar")
                 tmp_bag.unlink()
@@ -69,6 +69,15 @@ class DigitizationPipeline:
             except Exception as e:
                 print(e)
                 logging.error(f"Error for ref_id {refid}: {e}")
+
+    def add_files_to_dir(self, refid, dir_to_bag):
+        master_tiffs = copy_tiff_files(
+            Path(self.root_dir, refid, "master"), dir_to_bag)
+        master_edited_tiffs = []
+        if Path(self.root_dir, refid, "master_edited").is_dir():
+            master_edited_tiffs = copy_tiff_files(Path(
+                self.root_dir, refid, "master_edited"), Path(self.tmp_dir, refid, "service"))
+        return master_tiffs + master_edited_tiffs
 
     def get_ignore_list(self):
         """Parses a text file whose filepath is provided in the config
